@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4facfe">
+    <title>Expense Tracker UA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="touch-optimized">
+    <div class="container">
+        <header>
+            <h1>💰 Expense Tracker UA</h1>
+            <p class="subtitle">Відстежуйте ваші витрати легко та зручно</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>➕ Додати витрату</h2>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label for="amount">Сума (грн):</label>
+                        <input type="number" id="amount" class="input-field" step="0.01" min="0" required placeholder="0.00" inputmode="decimal">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Категорія:</label>
+                        <select id="category" class="select-field" required>
+                            <option value="">Оберіть категорію</option>
+                            <option value="food">🍕 Їжа</option>
+                            <option value="transport">🚗 Транспорт</option>
+                            <option value="entertainment">🎬 Розваги</option>
+                            <option value="utilities">🏠 Комунальні</option>
+                            <option value="shopping">🛍️ Покупки</option>
+                            <option value="health">🏥 Здоров'я</option>
+                            <option value="other">📦 Інше</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Опис:</label>
+                        <textarea id="description" class="textarea-field" rows="2" placeholder="Короткий опис витрати..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">💾 Зберегти</button>
+                        <button type="button" id="refreshBtn" class="btn-secondary">🔄 Оновити</button>
+                    </div>
+                </form>
+
+                <div class="expenses-list" id="expensesList">
+                    <h3>📋 Останні витрати</h3>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2>📊 Статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalAmount">0.00</div>
+                        <div class="stat-label">Загальна сума</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalCount">0</div>
+                        <div class="stat-label">Кількість</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                    <div class="chart-placeholder" id="chartPlaceholder">Немає даних для графіка</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
