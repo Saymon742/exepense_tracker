@@ -1,26 +1,34 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-# Используем синхронную версию SQLite
-SQLALCHEMY_DATABASE_URL = "sqlite:///./expenses.db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    echo=True
-)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Синхронная зависимость для получения сессии
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
-    finally:
-        db.close()
+DATABASE_DIR = "user_databases"
+os.makedirs(DATABASE_DIR, exist_ok=True)
+
+engines = {}
+sessions = {}
+
+def get_user_engine(user_id: int):
+    if user_id not in engines:
+        db_path = f"{DATABASE_DIR}/user_{user_id}.db"
+        engine = create_engine(
+            f"sqlite:///{db_path}",
+            connect_args={"check_same_thread": False},
+            echo=True
+        )
+        engines[user_id] = engine
+    return engines[user_id]
+
+def get_user_session(user_id: int):
+    if user_id not in sessions:
+        engine = get_user_engine(user_id)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        sessions[user_id] = SessionLocal
+    
+    return sessions[user_id]()
+
+def create_user_tables(user_id: int):
+    engine = get_user_engine(user_id)
+    Base.metadata.create_all(bind=engine)
